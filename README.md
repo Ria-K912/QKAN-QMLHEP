@@ -1,8 +1,9 @@
-This project presents a novel hybrid quantum-classical architecture that integrates Quantum Singular Value Transformation (QSVT) with Linear Combination of Unitaries (LCU) and a quantum summation layer, followed by a classical Sine-based Kolmogorov-Arnold Network (SineKAN).
+# QKAN-QMLHEP
+This project presents a novel hybrid quantum-classical architecture that integrates **Quantum Singular Value Transformation (QSVT)** with **Linear Combination of Unitaries (LCU)** and a **quantum summation layer**, followed by a classical Kolmogorov-Arnold Network (KAN).
 
 Designed to bridge expressive quantum encoding with nonlinear classical learning, the framework enables end-to-end differentiable training using Pennylane and PyTorch. The QSVT module encodes input features via Chebyshev or Fourier polynomial transformations, while the LCU and quantum summation layers introduce trainable quantum aggregation, capturing interactions across polynomial basis functions.
 
-The resulting representations are passed through a spline-based KAN to produce interpretable and accurate predictions.
+The resulting representations are passed through a spline-based/sine KAN to produce interpretable and accurate predictions.
 
 Validated on:
 
