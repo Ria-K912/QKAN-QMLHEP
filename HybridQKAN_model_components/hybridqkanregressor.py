@@ -1,28 +1,35 @@
 import torch
 import torch.nn as nn
 from qsvt_sinepoly import QSVT
-from LCU import quantum_lcu_block 
-from quantum_summation import quantum_sum_block
-from SplineKANlayer import KANLayer 
+from LCU import quantum_lcu_block
+from quantum_summation import QuantumSumBlock
+from SplineKANlayer import KANLayer
 
 class QuantumKANRegressor(nn.Module):
-    def __init__(self, num_features, degree=5):
+    def __init__(self, num_features, degree=3):
         super().__init__()
         self.num_features = num_features
         self.degree = degree
 
-        self.pqc = QSVT(wires=1, degree=degree, depth=2) 
-        self.lcu_weights = nn.Parameter(torch.rand(num_features, degree)) 
+        self.qsvt = QSVT(wires=1, degree=degree, depth=2)
+        self.lcu_weights = nn.Parameter(torch.rand(num_features, degree))  # (F, P)
+        self.sum_blocks = nn.ModuleList([QuantumSumBlock(degree) for _ in range(num_features)])
         self.kan = KANLayer(in_features=num_features, out_features=1)
 
     def forward(self, X):
-        all_outputs = []
+        """
+        Input: X of shape (B, F)
+        Output: y_hat of shape (B, 1)
+        """
+        B = X.size(0)
+        all_features = []
 
-        for xi in X:  # xi shape: (num_features,)
-            qsvt_all = [self.pqc(xi[j]) for j in range(self.num_features)]  
-            qsvt_all = torch.stack(qsvt_all)  # shape: (F, P)
-            lcu_weighted = [quantum_lcu_block(qsvt_all[f], self.lcu_weights[f]) for f in range(self.num_features)]
-            summed = [quantum_sum_block(torch.stack([val])) for val in lcu_weighted]
-            all_outputs.append(torch.stack(summed))  # shape: (F,)
+        for i in range(B):
+            xi = X[i]  # shape: (F,)
+            qsvt_vecs = [self.qsvt(xi[f]) for f in range(self.num_features)]  # each: (P,)
+            lcu_vals = [quantum_lcu_block(qsvt_vecs[f], self.lcu_weights[f]) for f in range(self.num_features)]
+            summed = [self.sum_blocks[f](lcu_vals[f]) for f in range(self.num_features)]
+            all_features.append(torch.stack(summed))  # shape: (F,)
 
-        return self.kan(torch.stack(all_outputs))  # shape: (B, 1)
+        features = torch.stack(all_features)  # shape: (B, F)
+        return self.kan(features)  # shape: (B, 1)
