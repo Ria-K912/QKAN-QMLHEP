@@ -12,3 +12,6 @@ Validated on:
 - High-dimensional physical data: jet images from quark-gluon classification
 
 This work demonstrates the potential of hybrid QML pipelines in quantum-enhanced representation learning for real-world tasks.
+
+
+> *This project was developed as part of Google Summer of Code (GSoC) 2025 under the ML4Sci organization.*
