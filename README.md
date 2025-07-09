@@ -15,3 +15,8 @@ This work demonstrates the potential of hybrid QML pipelines in quantum-enhanced
 
 
 > *This project was developed as part of Google Summer of Code (GSoC) 2025 under the ML4Sci organization.*
+> *Project Title : Quantum Kolmogorov Arnold Networks for High Energy Physics Analysis at the LHC*
+> *Author-Ria Khatoniar , Mentors- Eric Reinhardt, Dinesh Ramakrishnan, KC Kong*
+> ![image](https://github.com/user-attachments/assets/015756d0-1489-48f6-8549-507dc35e6d47)
+
+
